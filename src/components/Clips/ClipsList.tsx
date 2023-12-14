@@ -5,7 +5,6 @@ import { Draggable } from 'react-drag-reorder'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import ClipCard from './ClipCard'
 import { ClipInterface } from '@/types/ClipItem'
-import { user } from 'firebase-functions/v1/auth'
 
 interface ClipsListProps {
   initialData: {
