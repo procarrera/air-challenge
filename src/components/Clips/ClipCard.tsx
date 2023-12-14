@@ -9,7 +9,7 @@ interface ClipCardProps {
 export default function ClipCard({ data }: ClipCardProps) {
   return (
     <div
-      className="w-fit h-40 rounded overflow-hidden shadow-lg min-w-40 hover:border hover:translate-x-2"
+      className="w-fit h-40 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300"
       style={{ aspectRatio: `${data.width}/${data.height}` }}
     >
       {data.type === 'photo' ? (

@@ -79,7 +79,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
   }
 
   return (
-    <div className="mt-16 flex flex-col gap-8 items-start justify-start">
+    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({initialData.data.total})
       </h1>

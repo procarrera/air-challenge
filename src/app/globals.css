@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.grabbable {
+    flex: none !important;
+    width: fit-content !important;;
+}
