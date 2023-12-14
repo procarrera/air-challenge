@@ -1,8 +1,6 @@
-import TopBar from "@/components/TopBar"
+import TopBar from '@/components/TopBar'
 
-export default function BoardLayout({
-    children,
-}: {
+export default function BoardLayout({ children }: {
     children: React.ReactNode
 }) {
     return (

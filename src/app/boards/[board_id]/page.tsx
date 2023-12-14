@@ -5,15 +5,15 @@ interface BoardPageProps {
   params: {
     board_id: string
   }
-  name: string
-  description: string
 }
 
 export default async function BoardPage({
-  params,
-  name = 'Air Branded Boards',
-  description = 'With a bunch of stock photos!',
+  params
 }: BoardPageProps) {
+
+  const name = 'Air Branded Boards'
+  const description = 'With a bunch of stock photos!'
+
   const [res1, res2] = await Promise.all([
     await fetch(
       `https://api.air.inc/shorturl/bDkBvnzpB/boards/${params.board_id}`,
