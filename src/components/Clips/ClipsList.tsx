@@ -106,6 +106,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
       </h1>
       <div className="flex flex-wrap gap-4 relative w-full">
         <InfiniteScroll
+          scrollThreshold={0.65}
           className="flex flex-wrap gap-4 relative w-full"
           dataLength={totalItems}
           next={fetchData}
