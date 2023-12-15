@@ -107,7 +107,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
       <div className="w-full">
         <InfiniteScroll
           scrollThreshold={0.65}
-          className="columns-5 gap-8 relative w-full"
+          className="columns-3 md:columns-5 gap-8 relative w-full"
           dataLength={totalItems}
           next={fetchData}
           hasMore={hasMore}
