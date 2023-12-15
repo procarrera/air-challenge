@@ -12,7 +12,7 @@ export default async function BoardPage({ params }: BoardPageProps) {
   const description = 'With a bunch of stock photos!'
 
   const [res1, res2] = await Promise.all([
-    await fetch(
+    fetch(
       `https://api.air.inc/shorturl/bDkBvnzpB/boards/${params.board_id}`,
       {
         cache: 'no-store', // SSG - do not cache
@@ -27,7 +27,7 @@ export default async function BoardPage({ params }: BoardPageProps) {
         },
       },
     ),
-    await fetch(`https://api.air.inc/shorturl/bDkBvnzpB/clips/search`, {
+    fetch(`https://api.air.inc/shorturl/bDkBvnzpB/clips/search`, {
       method: 'POST',
       cache: 'no-store', // SSG - do not cache
       headers: {

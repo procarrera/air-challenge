@@ -27,10 +27,6 @@ export default function ClipsList({ initialData }: ClipsListProps) {
   )
   const [totalItems, setTotalItems] = useState<number>(initialData.data.total)
 
-  useEffect(() => {
-    console.log('totalItems', totalItems)
-  }, [])
-
   const fetchData = async () => {
     console.log('FETCH ASSETS ROUTE')
     try {
