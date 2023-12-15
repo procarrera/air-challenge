@@ -7,8 +7,10 @@ export default function BoardLayout({
 }) {
   return (
     <>
-      <TopBar />
-      <div className="p-8 pt-0">{children}</div>
+      <div className="p-8 pt-0">
+        <TopBar />
+        {children}
+      </div>
     </>
   )
 }

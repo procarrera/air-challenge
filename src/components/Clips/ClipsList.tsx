@@ -91,7 +91,6 @@ export default function ClipsList({ initialData }: ClipsListProps) {
     }
     console.log('HANDLE NEW ORDER')
     console.log({ dragged, target })
-    debugger
     // get the index of the target and put the dragged item in its place
     const targetIndex = data.findIndex((item: any) => item.id === target)
     const draggedIndex = data.findIndex((item: any) => item.id === dragged)

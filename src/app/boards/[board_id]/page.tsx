@@ -59,8 +59,10 @@ export default async function BoardPage({ params }: BoardPageProps) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{name}</h1>
-      <p>{description}</p>
+      <div className="flex flex-col items-start justify-between gap-2 pb-8 border-b-2 w-full">
+        <h2 className="text-4xl font-bold">{name}</h2>
+        <p className="text-sm text-gray-500 font-semibold">{description}</p>
+      </div>
       <BoardsList boards={boardsData.data} />
       <ClipsList initialData={clipsData} />
     </div>

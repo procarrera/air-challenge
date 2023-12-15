@@ -29,7 +29,6 @@ export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
     () => ({
       type: 'ASSET',
       item: { id: data.id },
-      end(draggedItem, monitor) {},
       collect: (monitor: DragSourceMonitor) => {
         if (monitor.isDragging()) {
           console.log(`Dragging Index: ${data.id}}`)
