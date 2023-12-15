@@ -6,6 +6,9 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import ClipCard from './ClipCard'
 import { ClipInterface } from '@/types/ClipItem'
 
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
 interface ClipsListProps {
   initialData: {
     data: {
@@ -70,9 +73,17 @@ export default function ClipsList({ initialData }: ClipsListProps) {
     }
   }
 
-  function handleNewOrder(currentPos: number, newPos: number) {
-    console.log(currentPos, newPos)
+  function handleNewOrder(dragIndex: number, dropIndex: number) {
+    console.log("HANDLE NEW ORDER")
+    console.log({dragIndex, dropIndex})
+    // get the dragged item and swap it with the drop item
+    const draggedItem = data[dragIndex];
+    const updatedData = [...data];
+    updatedData.splice(dragIndex, 1);
+    updatedData.splice(dropIndex, 0, draggedItem);
+    setData(updatedData);
   }
+
 
   return (
     <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
@@ -96,11 +107,11 @@ export default function ClipsList({ initialData }: ClipsListProps) {
             </p>
           }
         >
-          <Draggable onPosChange={handleNewOrder}>
-            {data.map((asset: any) => (
-              <ClipCard key={asset.id} data={asset} />
+          <DndProvider backend={HTML5Backend}>
+            {data.map((asset: any, index: number) => (
+              <ClipCard key={asset.id} data={asset} index={index} handleNewOrder={handleNewOrder}/>
             ))}
-          </Draggable>
+          </DndProvider>
         </InfiniteScroll>
       </div>
     </div>
