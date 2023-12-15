@@ -6,7 +6,7 @@ interface BoardItemCardProps {
 
 export function BoardItemCard({ board }: BoardItemCardProps) {
   return (
-    <li className="max-w-xs w-60 h-60 rounded overflow-hidden shadow-lg relative">
+    <li className="lg:max-w-xl w-full md:w-60 h-60 rounded overflow-hidden shadow-lg relative">
       <div className="h-full">
         {board.thumbnails && (
           <img
