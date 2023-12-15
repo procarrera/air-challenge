@@ -56,7 +56,7 @@ export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
   return (
     <div
       ref={ref}
-      className={`w-fit h-40 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
+      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
         isOver ? 'border-4 border-blue-500' : ''
       }`}
       style={{ aspectRatio: `${data.width}/${data.height}` }}

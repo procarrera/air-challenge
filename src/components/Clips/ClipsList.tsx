@@ -104,10 +104,10 @@ export default function ClipsList({ initialData }: ClipsListProps) {
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({initialData.data.total})
       </h1>
-      <div className="flex flex-wrap gap-4 relative w-full">
+      <div className="w-full">
         <InfiniteScroll
           scrollThreshold={0.65}
-          className="flex flex-wrap gap-4 relative w-full"
+          className="columns-5 gap-8 relative w-full"
           dataLength={totalItems}
           next={fetchData}
           hasMore={hasMore}
