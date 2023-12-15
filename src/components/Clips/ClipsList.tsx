@@ -73,15 +73,25 @@ export default function ClipsList({ initialData }: ClipsListProps) {
     }
   }
 
-  function handleNewOrder(dragIndex: number, dropIndex: number) {
+  function handleNewOrder({ dragged, target }: { dragged: string, target: string }) {
+    function moveArrayItem(arr: any[], oldIndex: number, newIndex: number) {
+      // Remove the item from the old position
+      let item = arr.splice(oldIndex, 1)[0];
+
+      // Insert the item at the new position
+      arr.splice(newIndex, 0, item);
+
+      return arr;
+    }
     console.log("HANDLE NEW ORDER")
-    console.log({dragIndex, dropIndex})
-    // get the dragged item and swap it with the drop item
-    const draggedItem = data[dragIndex];
-    const updatedData = [...data];
-    updatedData.splice(dragIndex, 1);
-    updatedData.splice(dropIndex, 0, draggedItem);
-    setData(updatedData);
+    console.log({ dragged, target })
+    debugger;
+    // get the index of the target and put the dragged item in its place
+    const targetIndex = data.findIndex((item: any) => item.id === target)
+    const draggedIndex = data.findIndex((item: any) => item.id === dragged)
+    const newData = [...data]
+    const reArrangedData = moveArrayItem(newData, draggedIndex, targetIndex)
+    setData(reArrangedData)
   }
 
 
@@ -109,7 +119,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         >
           <DndProvider backend={HTML5Backend}>
             {data.map((asset: any, index: number) => (
-              <ClipCard key={asset.id} data={asset} index={index} handleNewOrder={handleNewOrder}/>
+              <ClipCard key={asset.id} data={asset} handleNewOrder={handleNewOrder} />
             ))}
           </DndProvider>
         </InfiniteScroll>

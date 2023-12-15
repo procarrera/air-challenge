@@ -7,34 +7,27 @@ import { useDrag, useDrop } from 'react-dnd'
 
 interface ClipCardProps {
   data: ClipInterface
-  allowedDropEffect?: string
-  index: number
-  handleNewOrder?: (dragIndex: number, hoverIndex: number) => void
+  handleNewOrder?: ({ dragged, target }: { dragged: string, target: string }) => void
 }
 interface DropResult {
   allowedDropEffect: string
   dropEffect: string
   name: string
   index: number
+  id: string
 }
 
-export default function ClipCard({ data, index, allowedDropEffect = "any", handleNewOrder }: ClipCardProps) {
+export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
   const ref = useRef(null)
-  const [{ opacity }, drag] = useDrag(
+  const [, drag] = useDrag(
     () => ({
       type: 'ASSET',
-      item: { name: data.id, index: index },
+      item: { id: data.id },
       end(draggedItem, monitor) {
-        const dropResult = monitor.getDropResult() as DropResult;
-        if (dropResult && handleNewOrder) {
-          const draggedIndex = draggedItem.index;
-          const dropIndex = dropResult.index;
-          handleNewOrder(draggedIndex, dropIndex);
-        }
       },
       collect: (monitor: DragSourceMonitor) => {
         if (monitor.isDragging()) {
-          console.log(`Dragging Index: ${index}`);
+          console.log(`Dragging Index: ${data.id}}`);
         }
         return { opacity: monitor.isDragging() ? 0.4 : 1 };
       },
@@ -43,9 +36,9 @@ export default function ClipCard({ data, index, allowedDropEffect = "any", handl
   );
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'ASSET',
-    drop: (item: { id: string, index: number }, monitor) => {
+    drop: (item: { id: string }, monitor) => {
       if (monitor.isOver() && handleNewOrder) {
-        handleNewOrder(item.index, index);
+        handleNewOrder({ dragged: item.id, target: data.id });
       }
     },
     collect: (monitor) => ({
