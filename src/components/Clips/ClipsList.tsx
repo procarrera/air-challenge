@@ -8,6 +8,7 @@ import { ClipInterface } from '@/types/ClipItem'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
+
 interface ClipsListProps {
   initialData: {
     data: {
@@ -120,7 +121,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
           }
         >
           <DndProvider backend={HTML5Backend}>
-            {data.map((item: ClipInterface, index: number) => {
+            {data.map((item: ClipInterface) => {
               return (
                 <ClipCard
                   key={item.id}
