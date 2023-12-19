@@ -7,7 +7,7 @@ import { Masonry, useInfiniteLoader } from 'masonic'
 
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
-import ClipCard from './ClipCard'
+import ClipCard from './ClipCard-grap'
 import { airAPI } from '@/services/api'
 
 interface ClipsListProps {
@@ -102,20 +102,22 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             Loading...
           </div>
         ) : (
-          <Masonry
-            // Infinite loader
-            onRender={infiniteLoad}
-            // Provides the data for our grid items
-            items={clips}
-            // Adds 8px of space between the grid cells
-            columnGutter={8}
-            // Sets the minimum column width to 172px
-            columnWidth={220}
-            // Pre-renders 5 windows worth of content
-            overscanBy={2}
-            // This is the grid item component
-            render={ClipCard}
-          />
+          <DndProvider backend={HTML5Backend}>
+            <Masonry
+              // Infinite loader
+              onRender={infiniteLoad}
+              // Provides the data for our grid items
+              items={clips}
+              // Adds 8px of space between the grid cells
+              columnGutter={8}
+              // Sets the minimum column width to 172px
+              columnWidth={220}
+              // Pre-renders 5 windows worth of content
+              overscanBy={2}
+              // This is the grid item component
+              render={ClipCard}
+            />
+          </DndProvider>
         )}
       </div>
     </div>

@@ -14,6 +14,7 @@ interface ClipCardProps {
     dragged: string
     target: string
   }) => void
+  style?: React.CSSProperties
 }
 interface DropResult {
   allowedDropEffect: string
@@ -23,7 +24,7 @@ interface DropResult {
   id: string
 }
 
-export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
+export default function ClipCard({ data, handleNewOrder, style }: ClipCardProps) {
   const ref = useRef(null)
   const [, drag] = useDrag(
     () => ({
@@ -59,7 +60,7 @@ export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
       className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
         isOver ? 'border-4 border-blue-500' : ''
       }`}
-      style={{ aspectRatio: `${data.width}/${data.height}` }}
+      style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (
         <div className="relative w-full h-full">
