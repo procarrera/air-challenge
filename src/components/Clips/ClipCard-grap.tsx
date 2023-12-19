@@ -1,25 +1,23 @@
 'use client'
 
-import { useContext, useRef } from 'react'
+import { useRef } from 'react'
 import { ClipInterface } from '../../types/ClipItem'
-import type { DragSourceMonitor, DropTargetMonitor } from 'react-dnd'
+import type { DragSourceMonitor } from 'react-dnd'
 import { useDrag, useDrop } from 'react-dnd'
 
 interface ClipCardProps {
   data: ClipInterface
   style?: React.CSSProperties
 }
-interface DropResult {
-  allowedDropEffect: string
-  dropEffect: string
-  name: string
-  index: number
-  id: string
-}
 
 export default function ClipCard({ data, style }: ClipCardProps) {
-
-  function handleMerge({ dragged, target }: { dragged: string; target: string }) {
+  function handleMerge({
+    dragged,
+    target,
+  }: {
+    dragged: string
+    target: string
+  }) {
     alert(`Merging ${dragged} into ${target}`)
   }
 
@@ -55,8 +53,9 @@ export default function ClipCard({ data, style }: ClipCardProps) {
   return (
     <div
       ref={ref}
-      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${isOver ? 'border-4 border-blue-500' : ''
-        }`}
+      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
+        isOver ? 'border-4 border-blue-500' : ''
+      }`}
       style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (

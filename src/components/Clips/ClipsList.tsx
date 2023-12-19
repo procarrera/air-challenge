@@ -1,6 +1,6 @@
 'use client'
 
-import { use, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Masonry, useInfiniteLoader } from 'masonic'
@@ -12,20 +12,6 @@ import { airAPI } from '@/services/api'
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard-grap'
 
-
-interface ClipResponseInterface {
-  initialData: {
-    data: {
-      total: number
-      clips: ClipInterface[]
-    }
-    pagination: {
-      hasMore: boolean
-      cursor: string
-    }
-  }
-}
-
 export default function ClipsList({ boardId }: { boardId: string }) {
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
@@ -33,14 +19,15 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   const [totalClips, setTotalClips] = useState<number>(0)
 
   async function loadData() {
-    if (!hasMore) return;
+    if (!hasMore) return
     const data = await fetchMoreData()
     const nextItems = data.data.clips
     const pagination = data.pagination
     setClips((current) => [
       ...current,
       ...nextItems.filter(
-        (item: ClipInterface) => !current.some((existingItem) => existingItem.id === item.id),
+        (item: ClipInterface) =>
+          !current.some((existingItem) => existingItem.id === item.id),
       ),
     ])
     setHasMore(pagination.hasMore)
@@ -52,15 +39,12 @@ export default function ClipsList({ boardId }: { boardId: string }) {
     loadData()
   }, [])
 
-  const infiniteLoad = useInfiniteLoader(
-    loadData,
-    {
-      isItemLoaded: (index, items) => !!items[index],
-      minimumBatchSize: 20,
-      threshold: 5,
-      totalItems: totalClips,
-    },
-  )
+  const infiniteLoad = useInfiniteLoader(loadData, {
+    isItemLoaded: (index, items) => !!items[index],
+    minimumBatchSize: 20,
+    threshold: 5,
+    totalItems: totalClips,
+  })
 
   const fetchMoreData = async () => {
     try {
@@ -99,22 +83,22 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             Loading...
           </div>
         ) : (
-            <DndProvider backend={HTML5Backend}>
-              <Masonry
-                // Infinite loader
-                onRender={infiniteLoad}
-                // Provides the data for our grid items
-                items={clips}
-                // Adds 8px of space between the grid cells
-                columnGutter={8}
-                // Sets the minimum column width to 172px
-                columnWidth={220}
-                // Pre-renders 5 windows worth of content
-                overscanBy={2}
-                // This is the grid item component
-                render={ClipCard}
-              />
-            </DndProvider>
+          <DndProvider backend={HTML5Backend}>
+            <Masonry
+              // Infinite loader
+              onRender={infiniteLoad}
+              // Provides the data for our grid items
+              items={clips}
+              // Adds 8px of space between the grid cells
+              columnGutter={8}
+              // Sets the minimum column width to 172px
+              columnWidth={220}
+              // Pre-renders 5 windows worth of content
+              overscanBy={2}
+              // This is the grid item component
+              render={ClipCard}
+            />
+          </DndProvider>
         )}
       </div>
     </div>

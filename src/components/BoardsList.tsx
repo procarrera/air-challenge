@@ -1,5 +1,5 @@
 'use client'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BoardItemCard } from './BoardItemCard'
 
 import { airAPI } from '@/services/api'
