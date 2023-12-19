@@ -5,12 +5,10 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Masonry, useInfiniteLoader } from 'masonic'
 
-
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard'
 import { airAPI } from '@/services/api'
-
 
 interface ClipsListProps {
   initialData: {
@@ -71,7 +69,7 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             is: boardId,
           },
         },
-        boardId: boardId,
+        boardId,
         sortField: {
           direction: 'desc',
           name: 'dateModified',
@@ -95,22 +93,22 @@ export default function ClipsList({ boardId }: { boardId: string }) {
           <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
             Loading...
           </div>
-        ) : (<Masonry
-          // Infinite loader
-          onRender={infiniteLoad}
-          // Provides the data for our grid items
-          items={clips}
-          // Adds 8px of space between the grid cells
-          columnGutter={8}
-          // Sets the minimum column width to 172px
-          columnWidth={172}
-          // Pre-renders 5 windows worth of content
-          overscanBy={5}
-          // This is the grid item component
-          render={ClipCard}
-        />)
-        }
-
+        ) : (
+          <Masonry
+            // Infinite loader
+            onRender={infiniteLoad}
+            // Provides the data for our grid items
+            items={clips}
+            // Adds 8px of space between the grid cells
+            columnGutter={8}
+            // Sets the minimum column width to 172px
+            columnWidth={172}
+            // Pre-renders 5 windows worth of content
+            overscanBy={5}
+            // This is the grid item component
+            render={ClipCard}
+          />
+        )}
       </div>
     </div>
   )

@@ -15,7 +15,9 @@ export function BoardItemCard({ subBoard }: BoardItemCardProps) {
             alt="Sunset in the mountains"
           />
         )}
-        {!subBoard.thumbnails && <div className="w-full h-full bg-gray-300"></div>}
+        {!subBoard.thumbnails && (
+          <div className="w-full h-full bg-gray-300"></div>
+        )}
       </div>
       <h3 className="text-white absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2 text-center">
         {subBoard.title}
