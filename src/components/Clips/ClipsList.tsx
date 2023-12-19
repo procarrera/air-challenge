@@ -28,10 +28,8 @@ export default function ClipsList({ initialData }: ClipsListProps) {
   const [nextCursor, setNextCursor] = useState<string>(
     initialData.pagination.cursor,
   )
-  const [totalItems, setTotalItems] = useState<number>(initialData.data.total)
 
-  const fetchData = async () => {
-    console.log('FETCH ASSETS ROUTE')
+  const fetchMoreData = async () => {
     try {
       const response = await fetch(
         `https://api.air.inc/shorturl/bDkBvnzpB/clips/search`,
@@ -49,7 +47,7 @@ export default function ClipsList({ initialData }: ClipsListProps) {
             limit: 20,
             type: 'all',
             withOpenDiscussionStatus: true,
-            cursor: nextCursor === '' ? null : nextCursor,
+            cursor: nextCursor,
             filters: {
               board: {
                 is: 'c74bbbc8-602b-4c88-be71-9e21b36b0514',
@@ -65,9 +63,11 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         },
       )
       const responseData = await response.json()
+
       setData((prevItems: any) => [...prevItems, ...responseData.data.clips])
       setHasMore(responseData.pagination.hasMore)
       setNextCursor(responseData.pagination.cursor)
+
     } catch (error) {
       console.error(error)
     }
@@ -106,20 +106,14 @@ export default function ClipsList({ initialData }: ClipsListProps) {
       </h1>
       <div className="w-full">
         <InfiniteScroll
-          scrollThreshold={0.65}
           className="columns-3 md:columns-5 gap-8 relative w-full"
-          dataLength={totalItems}
-          next={fetchData}
+          dataLength={data.length}
+          next={fetchMoreData}
           hasMore={hasMore}
           loader={
             <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
               Loading...
             </div>
-          }
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>Yay! You have seen it all</b>
-            </p>
           }
         >
           <DndProvider backend={HTML5Backend}>
