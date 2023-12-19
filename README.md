@@ -1,7 +1,6 @@
-# Air — Staff Frontend Developer Challenge
+# Air | Staff Frontend Developer Challenge
 
-##
-Check out the live demo of the Air Gallery app [here](https://air-gallery-next-14.vercel.app)!
+## Check out the live demo of the Air Gallery app [here](https://air-gallery-next-14.vercel.app)!
 
 
 ## Main Dependencies
