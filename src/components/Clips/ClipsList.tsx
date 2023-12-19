@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Draggable } from 'react-drag-reorder'
+import { useEffect, useState, memo, CSSProperties } from 'react'
+import { FixedSizeList as List } from 'react-window';
 import InfiniteScroll from 'react-infinite-scroll-component'
 import ClipCard from './ClipCard'
 import { ClipInterface } from '@/types/ClipItem'
@@ -22,8 +22,25 @@ interface ClipsListProps {
   }
 }
 
+interface RowProps {
+  index: number;
+  style: CSSProperties;
+  data: ClipInterface[];
+  handleNewOrder: (newOrder: any) => void; // Replace 'any' with the type of 'newOrder'
+}
+
+const Row = memo(({ index, style, data, handleNewOrder }: RowProps) => (
+  <div style={style}>
+    <ClipCard
+      key={data[index].id}
+      data={data[index]}
+      handleNewOrder={handleNewOrder}
+    />
+  </div>
+));
+
 export default function ClipsList({ initialData }: ClipsListProps) {
-  const [data, setData] = useState<any>([...initialData.data.clips])
+  const [data, setData] = useState<ClipInterface[]>([...initialData.data.clips])
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [nextCursor, setNextCursor] = useState<string>(
     initialData.pagination.cursor,
@@ -63,11 +80,11 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         },
       )
       const responseData = await response.json()
+      const newData = [...data, ...responseData.data.clips]
 
       setData((prevItems: any) => [...prevItems, ...responseData.data.clips])
       setHasMore(responseData.pagination.hasMore)
       setNextCursor(responseData.pagination.cursor)
-
     } catch (error) {
       console.error(error)
     }
@@ -115,15 +132,22 @@ export default function ClipsList({ initialData }: ClipsListProps) {
               Loading...
             </div>
           }
+          endMessage={
+            <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
+              <b>Yay! You have seen it all</b>
+            </div>
+          }
         >
           <DndProvider backend={HTML5Backend}>
-            {data.map((asset: any, index: number) => (
-              <ClipCard
-                key={asset.id}
-                data={asset}
-                handleNewOrder={handleNewOrder}
-              />
-            ))}
+          <List
+            height={500} // Adjust based on your requirement
+            itemCount={data.length}
+            itemSize={150} // Adjust based on your requirement
+            itemData={data}
+            width='100%'
+          >
+            {Row}
+          </List>
           </DndProvider>
         </InfiniteScroll>
       </div>
