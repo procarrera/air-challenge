@@ -8,6 +8,13 @@ import { ClipInterface } from '@/types/ClipItem'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
+import {
+  CellMeasurer,
+  CellMeasurerCache,
+  createMasonryCellPositioner,
+  Masonry
+} from 'react-virtualized';
+import MansoryVirtualizedGrid from './MansoryVirtualizedGrid'
 
 interface ClipsListProps {
   initialData: {
@@ -21,7 +28,6 @@ interface ClipsListProps {
     }
   }
 }
-
 
 export default function ClipsList({ initialData }: ClipsListProps) {
   const [data, setData] = useState<ClipInterface[]>([...initialData.data.clips])
@@ -104,6 +110,16 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         All assets ({initialData.data.total})
       </h1>
       <div className="w-full">
+        <MansoryVirtualizedGrid data={data} />
+      </div>
+    </div>
+  )
+  /*return (
+    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
+      <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
+        All assets ({initialData.data.total})
+      </h1>
+      <div className="w-full">
         <InfiniteScroll
           className="columns-3 md:columns-5 gap-8 relative w-full"
           dataLength={data.length}
@@ -134,5 +150,5 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         </InfiniteScroll>
       </div>
     </div>
-  )
+  )*/
 }
