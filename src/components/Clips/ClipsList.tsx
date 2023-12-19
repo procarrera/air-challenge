@@ -1,12 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ClipInterface } from '@/types/ClipItem'
-
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
-
 import { Masonry, useInfiniteLoader } from 'masonic'
+
+
+/* COMPONENTS */
+import { ClipInterface } from '@/types/ClipItem'
+import ClipCard from './ClipCard'
+import { airAPI } from '@/services/api'
+
 
 interface ClipsListProps {
   initialData: {
@@ -21,35 +25,7 @@ interface ClipsListProps {
   }
 }
 
-const ClipCard = ({ data }: { data: ClipInterface }) => (
-  <div
-    className={
-      'w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 transition-all duration-300 border-4 border-transparent hover:border-4 hover:border-blue-500'
-    }
-  >
-    {data.type === 'photo' ? (
-      <div className="relative w-full h-full">
-        <img
-          src={data.assets.image}
-          alt={data.displayName}
-          className="w-full h-full object-cover"
-        />
-      </div>
-    ) : (
-      <video
-        autoPlay
-        playsInline
-        loop
-        muted
-        src={data.assets.previewVideo}
-        controls={false}
-        className="w-full h-full object-cover"
-      />
-    )}
-  </div>
-)
-
-export default function ClipsList() {
+export default function ClipsList({ boardId }: { boardId: string }) {
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [nextCursor, setNextCursor] = useState<string>('')
@@ -85,38 +61,24 @@ export default function ClipsList() {
 
   const fetchMoreData = async () => {
     try {
-      const response = await fetch(
-        `https://api.air.inc/shorturl/bDkBvnzpB/clips/search`,
-        {
-          method: 'POST',
-          headers: {
-            accept: 'application/json',
-            'accept-language': 'en-US,en;q=0.9',
-            authorization: '',
-            'content-type': 'application/json',
-            origin: 'https://app.air.inc',
-            referer: 'https://app.air.inc/',
+      const res = await airAPI.post(`/clips/search`, {
+        limit: 20,
+        type: 'all',
+        withOpenDiscussionStatus: true,
+        cursor: nextCursor,
+        filters: {
+          board: {
+            is: boardId,
           },
-          body: JSON.stringify({
-            limit: 20,
-            type: 'all',
-            withOpenDiscussionStatus: true,
-            cursor: nextCursor,
-            filters: {
-              board: {
-                is: 'c74bbbc8-602b-4c88-be71-9e21b36b0514',
-              },
-            },
-            boardId: 'c74bbbc8-602b-4c88-be71-9e21b36b0514',
-            sortField: {
-              direction: 'desc',
-              name: 'dateModified',
-            },
-            descendantBoardId: 'c74bbbc8-602b-4c88-be71-9e21b36b0514',
-          }),
         },
-      )
-      const data = await response.json()
+        boardId: boardId,
+        sortField: {
+          direction: 'desc',
+          name: 'dateModified',
+        },
+        descendantBoardId: boardId,
+      })
+      const data = res.data
       return data
     } catch (error) {
       console.error(error)
