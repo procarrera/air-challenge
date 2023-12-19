@@ -26,34 +26,42 @@ interface ClipsListProps {
 export default function ClipsList({ boardId }: { boardId: string }) {
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
-  const [nextCursor, setNextCursor] = useState<string>('')
+  const [nextCursor, setNextCursor] = useState<string | null>(null)
+  const [totalClips, setTotalClips] = useState<number>(0)
 
   async function loadData() {
+    if (!hasMore) return;
     const data = await fetchMoreData()
     const nextItems = data.data.clips
     const pagination = data.pagination
-    setClips((current) => [...current, ...nextItems])
+    setClips((current) => [
+      ...current,
+      ...nextItems.filter(
+        (item: ClipInterface) => !current.some((existingItem) => existingItem.id === item.id),
+      ),
+    ])
     setHasMore(pagination.hasMore)
     setNextCursor(pagination.cursor)
+    setTotalClips(data.data.total)
+
   }
 
   useEffect(() => {
     loadData()
   }, [])
 
+  useEffect(() => {
+    console.log("CLIPS => ", clips.length)
+    console.log("TOTAL CLIPS => ", totalClips)
+  }, [clips])
+
   const infiniteLoad = useInfiniteLoader(
-    async () => {
-      const data = await fetchMoreData()
-      const nextItems = data.data.clips
-      const pagination = data.pagination
-      setClips((current) => [...current, ...nextItems])
-      setHasMore(pagination.hasMore)
-      setNextCursor(pagination.cursor)
-    },
+    loadData,
     {
       isItemLoaded: (index, items) => !!items[index],
-      minimumBatchSize: 32,
-      threshold: 3,
+      minimumBatchSize: 20,
+      threshold: 5,
+      totalItems: totalClips,
     },
   )
 
@@ -102,9 +110,9 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             // Adds 8px of space between the grid cells
             columnGutter={8}
             // Sets the minimum column width to 172px
-            columnWidth={172}
+            columnWidth={220}
             // Pre-renders 5 windows worth of content
-            overscanBy={5}
+            overscanBy={2}
             // This is the grid item component
             render={ClipCard}
           />
