@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useState, memo, CSSProperties } from 'react'
-import { FixedSizeList as List } from 'react-window';
+import { useState, memo, CSSProperties } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import ClipCard from './ClipCard'
 import { ClipInterface } from '@/types/ClipItem'
@@ -22,22 +21,6 @@ interface ClipsListProps {
   }
 }
 
-interface RowProps {
-  index: number;
-  style: CSSProperties;
-  data: ClipInterface[];
-  handleNewOrder: (newOrder: any) => void; // Replace 'any' with the type of 'newOrder'
-}
-
-const Row = memo(({ index, style, data, handleNewOrder }: RowProps) => (
-  <div style={style}>
-    <ClipCard
-      key={data[index].id}
-      data={data[index]}
-      handleNewOrder={handleNewOrder}
-    />
-  </div>
-));
 
 export default function ClipsList({ initialData }: ClipsListProps) {
   const [data, setData] = useState<ClipInterface[]>([...initialData.data.clips])
@@ -80,8 +63,6 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         },
       )
       const responseData = await response.json()
-      const newData = [...data, ...responseData.data.clips]
-
       setData((prevItems: any) => [...prevItems, ...responseData.data.clips])
       setHasMore(responseData.pagination.hasMore)
       setNextCursor(responseData.pagination.cursor)
@@ -97,22 +78,22 @@ export default function ClipsList({ initialData }: ClipsListProps) {
     dragged: string
     target: string
   }) {
-    function moveArrayItem(arr: any[], oldIndex: number, newIndex: number) {
-      // Remove the item from the old position
-      const item = arr.splice(oldIndex, 1)[0]
-
-      // Insert the item at the new position
-      arr.splice(newIndex, 0, item)
-
-      return arr
+    function swapElements<T>(array: T[], draggedIndex: number, targetIndex: number,): T[] {
+      const newArray = [...array]; // Create a copy of the original array to avoid modifying the original
+      // Check if the indices are within the array bounds
+      if (draggedIndex < 0 || draggedIndex >= newArray.length || targetIndex < 0 || targetIndex >= newArray.length) {
+        throw new Error('Indices out of array bounds');
+      }
+      // Swap the elements at the specified positions
+      const draggedElement = newArray[draggedIndex];
+      newArray[draggedIndex] = newArray[targetIndex];
+      newArray[targetIndex] = draggedElement;
+      return newArray;
     }
-    console.log('HANDLE NEW ORDER')
-    console.log({ dragged, target })
     // get the index of the target and put the dragged item in its place
     const targetIndex = data.findIndex((item: any) => item.id === target)
     const draggedIndex = data.findIndex((item: any) => item.id === dragged)
-    const newData = [...data]
-    const reArrangedData = moveArrayItem(newData, draggedIndex, targetIndex)
+    const reArrangedData = swapElements(data, draggedIndex, targetIndex)
     setData(reArrangedData)
   }
 
@@ -139,15 +120,15 @@ export default function ClipsList({ initialData }: ClipsListProps) {
           }
         >
           <DndProvider backend={HTML5Backend}>
-          <List
-            height={500} // Adjust based on your requirement
-            itemCount={data.length}
-            itemSize={150} // Adjust based on your requirement
-            itemData={data}
-            width='100%'
-          >
-            {Row}
-          </List>
+            {data.map((item: ClipInterface, index: number) => {
+              return (
+                <ClipCard
+                  key={item.id}
+                  data={item}
+                  handleNewOrder={handleNewOrder}
+                />
+              )
+            })}
           </DndProvider>
         </InfiniteScroll>
       </div>
