@@ -1,20 +1,12 @@
 'use client'
 
-import { useState, memo, CSSProperties } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import ClipCard from './ClipCard'
+import { useEffect, useState } from 'react'
 import { ClipInterface } from '@/types/ClipItem'
 
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import {
-  CellMeasurer,
-  CellMeasurerCache,
-  createMasonryCellPositioner,
-  Masonry
-} from 'react-virtualized';
-import MansoryVirtualizedGrid from './MansoryVirtualizedGrid'
+import { Masonry, useInfiniteLoader } from 'masonic'
 
 interface ClipsListProps {
   initialData: {
@@ -29,11 +21,66 @@ interface ClipsListProps {
   }
 }
 
-export default function ClipsList({ initialData }: ClipsListProps) {
-  const [data, setData] = useState<ClipInterface[]>([...initialData.data.clips])
+const ClipCard = ({ data }: { data: ClipInterface }) => (
+  <div
+    className={
+      'w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 transition-all duration-300 border-4 border-transparent hover:border-4 hover:border-blue-500'
+    }
+  >
+    {data.type === 'photo' ? (
+      <div className="relative w-full h-full">
+        <img
+          src={data.assets.image}
+          alt={data.displayName}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    ) : (
+      <video
+        autoPlay
+        playsInline
+        loop
+        muted
+        src={data.assets.previewVideo}
+        controls={false}
+        className="w-full h-full object-cover"
+      />
+    )}
+  </div>
+)
+
+export default function ClipsList() {
+  const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
-  const [nextCursor, setNextCursor] = useState<string>(
-    initialData.pagination.cursor,
+  const [nextCursor, setNextCursor] = useState<string>('')
+
+  async function loadData() {
+    const data = await fetchMoreData()
+    const nextItems = data.data.clips
+    const pagination = data.pagination
+    setClips((current) => [...current, ...nextItems])
+    setHasMore(pagination.hasMore)
+    setNextCursor(pagination.cursor)
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const infiniteLoad = useInfiniteLoader(
+    async () => {
+      const data = await fetchMoreData()
+      const nextItems = data.data.clips
+      const pagination = data.pagination
+      setClips((current) => [...current, ...nextItems])
+      setHasMore(pagination.hasMore)
+      setNextCursor(pagination.cursor)
+    },
+    {
+      isItemLoaded: (index, items) => !!items[index],
+      minimumBatchSize: 32,
+      threshold: 3,
+    },
   )
 
   const fetchMoreData = async () => {
@@ -69,52 +116,43 @@ export default function ClipsList({ initialData }: ClipsListProps) {
           }),
         },
       )
-      const responseData = await response.json()
-      setData((prevItems: any) => [...prevItems, ...responseData.data.clips])
-      setHasMore(responseData.pagination.hasMore)
-      setNextCursor(responseData.pagination.cursor)
+      const data = await response.json()
+      return data
     } catch (error) {
       console.error(error)
     }
   }
 
-  function handleNewOrder({
-    dragged,
-    target,
-  }: {
-    dragged: string
-    target: string
-  }) {
-    function swapElements<T>(array: T[], draggedIndex: number, targetIndex: number,): T[] {
-      const newArray = [...array]; // Create a copy of the original array to avoid modifying the original
-      // Check if the indices are within the array bounds
-      if (draggedIndex < 0 || draggedIndex >= newArray.length || targetIndex < 0 || targetIndex >= newArray.length) {
-        throw new Error('Indices out of array bounds');
-      }
-      // Swap the elements at the specified positions
-      const draggedElement = newArray[draggedIndex];
-      newArray[draggedIndex] = newArray[targetIndex];
-      newArray[targetIndex] = draggedElement;
-      return newArray;
-    }
-    // get the index of the target and put the dragged item in its place
-    const targetIndex = data.findIndex((item: any) => item.id === target)
-    const draggedIndex = data.findIndex((item: any) => item.id === dragged)
-    const reArrangedData = swapElements(data, draggedIndex, targetIndex)
-    setData(reArrangedData)
-  }
-
   return (
     <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
-        All assets ({initialData.data.total})
+        All assets ({0})
       </h1>
       <div className="w-full">
-        <MansoryVirtualizedGrid data={data} />
+        {clips.length === 0 ? (
+          <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
+            Loading...
+          </div>
+        ) : (<Masonry
+          // Infinite loader
+          onRender={infiniteLoad}
+          // Provides the data for our grid items
+          items={clips}
+          // Adds 8px of space between the grid cells
+          columnGutter={8}
+          // Sets the minimum column width to 172px
+          columnWidth={172}
+          // Pre-renders 5 windows worth of content
+          overscanBy={5}
+          // This is the grid item component
+          render={ClipCard}
+        />)
+        }
+
       </div>
     </div>
   )
-  /*return (
+  /* return (
     <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({initialData.data.total})
@@ -150,5 +188,5 @@ export default function ClipsList({ initialData }: ClipsListProps) {
         </InfiniteScroll>
       </div>
     </div>
-  )*/
+  ) */
 }

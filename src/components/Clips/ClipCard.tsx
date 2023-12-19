@@ -62,12 +62,12 @@ export default function ClipCard({ data, handleNewOrder }: ClipCardProps) {
       style={{ aspectRatio: `${data.width}/${data.height}` }}
     >
       {data.type === 'photo' ? (
-        <div className='relative w-full h-full'>
-        <img
-          src={data.assets.image}
-          alt={data.displayName}
-          className="w-full h-full object-cover"
-        />
+        <div className="relative w-full h-full">
+          <img
+            src={data.assets.image}
+            alt={data.displayName}
+            className="w-full h-full object-cover"
+          />
         </div>
       ) : (
         <video
