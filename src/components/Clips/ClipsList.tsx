@@ -1,16 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { use, useContext, useEffect, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Masonry, useInfiniteLoader } from 'masonic'
 
+/* SERVICES */
+import { airAPI } from '@/services/api'
+
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard-grap'
-import { airAPI } from '@/services/api'
 
-interface ClipsListProps {
+
+interface ClipResponseInterface {
   initialData: {
     data: {
       total: number
@@ -43,17 +46,11 @@ export default function ClipsList({ boardId }: { boardId: string }) {
     setHasMore(pagination.hasMore)
     setNextCursor(pagination.cursor)
     setTotalClips(data.data.total)
-
   }
 
   useEffect(() => {
     loadData()
   }, [])
-
-  useEffect(() => {
-    console.log("CLIPS => ", clips.length)
-    console.log("TOTAL CLIPS => ", totalClips)
-  }, [clips])
 
   const infiniteLoad = useInfiniteLoader(
     loadData,
@@ -102,61 +99,24 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             Loading...
           </div>
         ) : (
-          <DndProvider backend={HTML5Backend}>
-            <Masonry
-              // Infinite loader
-              onRender={infiniteLoad}
-              // Provides the data for our grid items
-              items={clips}
-              // Adds 8px of space between the grid cells
-              columnGutter={8}
-              // Sets the minimum column width to 172px
-              columnWidth={220}
-              // Pre-renders 5 windows worth of content
-              overscanBy={2}
-              // This is the grid item component
-              render={ClipCard}
-            />
-          </DndProvider>
+            <DndProvider backend={HTML5Backend}>
+              <Masonry
+                // Infinite loader
+                onRender={infiniteLoad}
+                // Provides the data for our grid items
+                items={clips}
+                // Adds 8px of space between the grid cells
+                columnGutter={8}
+                // Sets the minimum column width to 172px
+                columnWidth={220}
+                // Pre-renders 5 windows worth of content
+                overscanBy={2}
+                // This is the grid item component
+                render={ClipCard}
+              />
+            </DndProvider>
         )}
       </div>
     </div>
   )
-  /* return (
-    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
-      <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
-        All assets ({initialData.data.total})
-      </h1>
-      <div className="w-full">
-        <InfiniteScroll
-          className="columns-3 md:columns-5 gap-8 relative w-full"
-          dataLength={data.length}
-          next={fetchMoreData}
-          hasMore={hasMore}
-          loader={
-            <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
-              Loading...
-            </div>
-          }
-          endMessage={
-            <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
-              <b>Yay! You have seen it all</b>
-            </div>
-          }
-        >
-          <DndProvider backend={HTML5Backend}>
-            {data.map((item: ClipInterface) => {
-              return (
-                <ClipCard
-                  key={item.id}
-                  data={item}
-                  handleNewOrder={handleNewOrder}
-                />
-              )
-            })}
-          </DndProvider>
-        </InfiniteScroll>
-      </div>
-    </div>
-  ) */
 }

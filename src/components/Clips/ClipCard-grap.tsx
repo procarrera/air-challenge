@@ -1,19 +1,12 @@
 'use client'
 
-import { useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { ClipInterface } from '../../types/ClipItem'
 import type { DragSourceMonitor, DropTargetMonitor } from 'react-dnd'
 import { useDrag, useDrop } from 'react-dnd'
 
 interface ClipCardProps {
   data: ClipInterface
-  handleNewOrder?: ({
-    dragged,
-    target,
-  }: {
-    dragged: string
-    target: string
-  }) => void
   style?: React.CSSProperties
 }
 interface DropResult {
@@ -24,7 +17,12 @@ interface DropResult {
   id: string
 }
 
-export default function ClipCard({ data, handleNewOrder, style }: ClipCardProps) {
+export default function ClipCard({ data, style }: ClipCardProps) {
+
+  function handleMerge({ dragged, target }: { dragged: string; target: string }) {
+    alert(`Merging ${dragged} into ${target}`)
+  }
+
   const ref = useRef(null)
   const [, drag] = useDrag(
     () => ({
@@ -42,8 +40,8 @@ export default function ClipCard({ data, handleNewOrder, style }: ClipCardProps)
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'ASSET',
     drop: (item: { id: string }, monitor) => {
-      if (monitor.isOver() && handleNewOrder) {
-        handleNewOrder({ dragged: item.id, target: data.id })
+      if (monitor.isOver() && handleMerge) {
+        handleMerge({ dragged: item.id, target: data.id })
       }
     },
     collect: (monitor) => ({
@@ -57,9 +55,8 @@ export default function ClipCard({ data, handleNewOrder, style }: ClipCardProps)
   return (
     <div
       ref={ref}
-      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
-        isOver ? 'border-4 border-blue-500' : ''
-      }`}
+      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${isOver ? 'border-4 border-blue-500' : ''
+        }`}
       style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (
