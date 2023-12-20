@@ -1,21 +1,11 @@
 import { SubBoardItem } from '@/types/SubBoardItem'
 import { useState } from 'react';
 import { Shell } from 'lucide-react';
+import LoadingMedia from './LoadingMedia';
 
 interface BoardItemCardProps {
   subBoard: SubBoardItem
 }
-
-const LoadingImage = () => {
-  return (
-    <div className="w-full h-full flex items-center justify-center">
-      <Shell
-        className="w-8 h-8 text-gray-200 animate-spin"
-        size={32}
-        strokeWidth={2} />
-    </div>
-  );
-};
 
 export function BoardItemCard({ subBoard }: BoardItemCardProps) {
   const [isImageLoaded, setImageLoaded] = useState(false);
@@ -25,7 +15,7 @@ export function BoardItemCard({ subBoard }: BoardItemCardProps) {
       <div className="h-full">
         {subBoard.thumbnails && (
           <>
-            {!isImageLoaded && <LoadingImage />}
+            {!isImageLoaded && <LoadingMedia />}
             <img
               className="w-full h-full object-cover"
               src={subBoard.thumbnails[0]}
