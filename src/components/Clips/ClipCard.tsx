@@ -15,7 +15,8 @@ interface ClipCardProps {
 }
 
 export default function ClipCard({ index, width, data, style }: ClipCardProps) {
-  const { selectedIndexesCtx, updateSelectedIndexesCtx } = useContext(SelectionContext);
+  const { selectedIndexesCtx, updateSelectedIndexesCtx } =
+    useContext(SelectionContext)
   const [isImageLoaded, setImageLoaded] = useState(false)
   function handleMerge({
     dragged,
@@ -62,7 +63,11 @@ export default function ClipCard({ index, width, data, style }: ClipCardProps) {
       data-clip-index={index}
       className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300
       ${isOver ? 'border-4 border-blue-500' : ''}
-      ${index && selectedIndexesCtx.includes(index) ? 'border-4 border-blue-500' : ''}`}
+      ${
+        index && selectedIndexesCtx.includes(index)
+          ? 'border-4 border-blue-500'
+          : ''
+      }`}
       style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (

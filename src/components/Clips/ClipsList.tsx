@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { Masonry, useInfiniteLoader } from 'masonic'
 
-
 import {
   Box,
   boxesIntersect,
@@ -16,7 +15,10 @@ import { airAPI } from '@/services/api'
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard'
-import { SelectionContext, SelectionProvider } from './Context/SelectedIndexesContext'
+import {
+  SelectionContext,
+  SelectionProvider,
+} from './Context/SelectedIndexesContext'
 
 interface BoardsAPIResponseInterface {
   data: {
@@ -29,60 +31,60 @@ interface BoardsAPIResponseInterface {
   }
 }
 
-
 export default function ClipsList({ boardId }: { boardId: string }) {
-  const { selectedIndexesCtx, updateSelectedIndexesCtx } = useContext(SelectionContext);
+  const { selectedIndexesCtx, updateSelectedIndexesCtx } =
+    useContext(SelectionContext)
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [totalClips, setTotalClips] = useState<number>(0)
 
-  const [selectionBox, setSelectionBox] = useState<Box>();
-  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
-  const selectableItems = useRef<Box[]>([]);
-  const elementsContainerRef = useRef<HTMLDivElement | null>(null);
+  const [selectionBox, setSelectionBox] = useState<Box>()
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([])
+  const selectableItems = useRef<Box[]>([])
+  const elementsContainerRef = useRef<HTMLDivElement | null>(null)
 
   const { DragSelection } = useSelectionContainer({
     onSelectionChange: (box) => {
-      setSelectionBox(box);
-      const indexesToSelect: number[] = [];
+      setSelectionBox(box)
+      const indexesToSelect: number[] = []
       selectableItems.current.forEach((item, index) => {
         if (boxesIntersect(box, item)) {
-          indexesToSelect.push(index);
+          indexesToSelect.push(index)
         }
-      });
+      })
 
-      setSelectedIndexes(indexesToSelect);
+      setSelectedIndexes(indexesToSelect)
       updateSelectedIndexesCtx(indexesToSelect)
     },
     onSelectionStart: () => {
-      console.log("OnSelectionStart");
+      console.log('OnSelectionStart')
     },
-    onSelectionEnd: () => console.log("OnSelectionEnd"),
+    onSelectionEnd: () => console.log('OnSelectionEnd'),
     selectionProps: {
       style: {
         borderRadius: 4,
         opacity: 0.5,
         zIndex: 99,
-      }
+      },
     },
-    isEnabled: true
-  });
+    isEnabled: true,
+  })
 
   useEffect(() => {
-    const clipCards = document.querySelectorAll('[data-clip-index]');
-    if (!clipCards) return;
+    const clipCards = document.querySelectorAll('[data-clip-index]')
+    if (!clipCards) return
     clipCards.forEach((item) => {
       console.log(item)
-      const { left, top, width, height } = item.getBoundingClientRect();
+      const { left, top, width, height } = item.getBoundingClientRect()
       selectableItems.current.push({
         left,
         top,
         width,
-        height
-      });
-    });
-  }, [clips]);
+        height,
+      })
+    })
+  }, [clips])
 
   async function loadData() {
     if (!hasMore) return
@@ -142,7 +144,10 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   }
 
   return (
-    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start relative" ref={elementsContainerRef}>
+    <div
+      className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start relative"
+      ref={elementsContainerRef}
+    >
       <DragSelection />
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({totalClips})
