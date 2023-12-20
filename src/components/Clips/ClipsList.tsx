@@ -10,7 +10,7 @@ import { airAPI } from '@/services/api'
 
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
-import ClipCard from './ClipCard-grap'
+import ClipCard from './ClipCard'
 
 export default function ClipsList({ boardId }: { boardId: string }) {
   const [clips, setClips] = useState<ClipInterface[]>([])
@@ -75,7 +75,7 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   return (
     <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
-        All assets ({0})
+        All assets ({totalClips})
       </h1>
       <div className="w-full">
         {clips.length === 0 ? (
