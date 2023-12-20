@@ -1,17 +1,21 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { ClipInterface } from '../../types/ClipItem'
 import type { DragSourceMonitor } from 'react-dnd'
 import { useDrag, useDrop } from 'react-dnd'
 import LoadingMedia from '../LoadingMedia'
+import { SelectionContext } from './Context/SelectedIndexesContext'
 
 interface ClipCardProps {
   data: ClipInterface
   style?: React.CSSProperties
+  index?: number
+  width?: number
 }
 
-export default function ClipCard({ data, style }: ClipCardProps) {
+export default function ClipCard({ index, width, data, style }: ClipCardProps) {
+  const { selectedIndexesCtx, updateSelectedIndexesCtx } = useContext(SelectionContext);
   const [isImageLoaded, setImageLoaded] = useState(false)
   function handleMerge({
     dragged,
@@ -55,9 +59,10 @@ export default function ClipCard({ data, style }: ClipCardProps) {
   return (
     <div
       ref={ref}
-      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
-        isOver ? 'border-4 border-blue-500' : ''
-      }`}
+      data-clip-index={index}
+      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300
+      ${isOver ? 'border-4 border-blue-500' : ''}
+      ${index && selectedIndexesCtx.includes(index) ? 'border-4 border-blue-500' : ''}`}
       style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (

@@ -1,9 +1,14 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { Masonry, useInfiniteLoader } from 'masonic'
+
+
+import {
+  Box,
+  boxesIntersect,
+  useSelectionContainer,
+} from '@air/react-drag-to-select'
 
 /* SERVICES */
 import { airAPI } from '@/services/api'
@@ -11,6 +16,7 @@ import { airAPI } from '@/services/api'
 /* COMPONENTS */
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard'
+import { SelectionContext, SelectionProvider } from './Context/SelectedIndexesContext'
 
 interface BoardsAPIResponseInterface {
   data: {
@@ -23,11 +29,60 @@ interface BoardsAPIResponseInterface {
   }
 }
 
+
 export default function ClipsList({ boardId }: { boardId: string }) {
+  const { selectedIndexesCtx, updateSelectedIndexesCtx } = useContext(SelectionContext);
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [nextCursor, setNextCursor] = useState<string | null>(null)
   const [totalClips, setTotalClips] = useState<number>(0)
+
+  const [selectionBox, setSelectionBox] = useState<Box>();
+  const [selectedIndexes, setSelectedIndexes] = useState<number[]>([]);
+  const selectableItems = useRef<Box[]>([]);
+  const elementsContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const { DragSelection } = useSelectionContainer({
+    onSelectionChange: (box) => {
+      setSelectionBox(box);
+      const indexesToSelect: number[] = [];
+      selectableItems.current.forEach((item, index) => {
+        if (boxesIntersect(box, item)) {
+          indexesToSelect.push(index);
+        }
+      });
+
+      setSelectedIndexes(indexesToSelect);
+      updateSelectedIndexesCtx(indexesToSelect)
+    },
+    onSelectionStart: () => {
+      console.log("OnSelectionStart");
+    },
+    onSelectionEnd: () => console.log("OnSelectionEnd"),
+    selectionProps: {
+      style: {
+        borderRadius: 4,
+        opacity: 0.5,
+        zIndex: 99,
+      }
+    },
+    isEnabled: true
+  });
+
+  useEffect(() => {
+    const clipCards = document.querySelectorAll('[data-clip-index]');
+    if (!clipCards) return;
+    clipCards.forEach((item) => {
+      console.log(item)
+      const { left, top, width, height } = item.getBoundingClientRect();
+      selectableItems.current.push({
+        left,
+        top,
+        width,
+        height
+      });
+    });
+  }, [clips]);
 
   async function loadData() {
     if (!hasMore) return
@@ -87,11 +142,12 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   }
 
   return (
-    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start relative">
+    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start relative" ref={elementsContainerRef}>
+      <DragSelection />
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({totalClips})
       </h1>
-      <div className="w-full relative">
+      <div className="w-full relative clips-wrapper">
         {clips.length === 0 ? (
           <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
             Loading...
