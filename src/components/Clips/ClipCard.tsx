@@ -12,7 +12,7 @@ interface ClipCardProps {
 }
 
 export default function ClipCard({ data, style }: ClipCardProps) {
-  const [isImageLoaded, setImageLoaded] = useState(false);
+  const [isImageLoaded, setImageLoaded] = useState(false)
   function handleMerge({
     dragged,
     target,
@@ -55,8 +55,9 @@ export default function ClipCard({ data, style }: ClipCardProps) {
   return (
     <div
       ref={ref}
-      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${isOver ? 'border-4 border-blue-500' : ''
-        }`}
+      className={`w-full mb-4 rounded overflow-hidden shadow-lg min-w-40 hover:border-2 transition-all duration-300 ${
+        isOver ? 'border-4 border-blue-500' : ''
+      }`}
       style={{ aspectRatio: `${data.width}/${data.height}`, ...style }}
     >
       {data.type === 'photo' ? (

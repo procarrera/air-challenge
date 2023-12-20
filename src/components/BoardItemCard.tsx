@@ -1,14 +1,14 @@
 import { SubBoardItem } from '@/types/SubBoardItem'
-import { useState } from 'react';
-import { Shell } from 'lucide-react';
-import LoadingMedia from './LoadingMedia';
+import { useState } from 'react'
+import { Shell } from 'lucide-react'
+import LoadingMedia from './LoadingMedia'
 
 interface BoardItemCardProps {
   subBoard: SubBoardItem
 }
 
 export function BoardItemCard({ subBoard }: BoardItemCardProps) {
-  const [isImageLoaded, setImageLoaded] = useState(false);
+  const [isImageLoaded, setImageLoaded] = useState(false)
 
   return (
     <li className="lg:max-w-xl w-full md:w-60 h-60 rounded overflow-hidden shadow-lg relative">
@@ -33,5 +33,5 @@ export function BoardItemCard({ subBoard }: BoardItemCardProps) {
         {subBoard.title}
       </h3>
     </li>
-  );
+  )
 }

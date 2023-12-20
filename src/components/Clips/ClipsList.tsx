@@ -58,7 +58,9 @@ export default function ClipsList({ boardId }: { boardId: string }) {
     totalItems: totalClips,
   })
 
-  async function fetchMoreData(): Promise<BoardsAPIResponseInterface | undefined> {
+  async function fetchMoreData(): Promise<
+    BoardsAPIResponseInterface | undefined
+  > {
     try {
       const res = await airAPI.post(`/clips/search`, {
         limit: 20,

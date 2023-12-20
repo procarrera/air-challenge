@@ -98,7 +98,9 @@ export function SubBoardsList({ parentBoardId }: { parentBoardId: string }) {
     loadData()
   }, [])
 
-  async function fectMoreData(): Promise<BoardsAPIResponseInterface | undefined> {
+  async function fectMoreData(): Promise<
+    BoardsAPIResponseInterface | undefined
+  > {
     try {
       const res = await airAPI.post(`/boards/${parentBoardId}`, {
         cursor: nextCursor,
