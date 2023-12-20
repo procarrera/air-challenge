@@ -9,6 +9,8 @@
 
 - **Next 14**: Next.js is a popular React framework that provides server-side rendering, automatic code splitting, and other advanced features to help you build modern web applications.
 
+- **@air/react-drag-to-select**: A highly-performant React library which adds drag-to-select to your app.
+
 - **React 18**: React is a JavaScript library for building user interfaces. It allows you to create reusable UI components and efficiently update and render them based on changes in data.
 
 - **React-dnd 16**: React DnD (Drag and Drop) is a set of React components that enable you to build complex drag and drop interfaces. It provides a simple API for handling drag and drop interactions.
