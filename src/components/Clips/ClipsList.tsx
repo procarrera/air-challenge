@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { Masonry, useInfiniteLoader } from 'masonic'
@@ -87,32 +87,30 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   }
 
   return (
-    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start">
+    <div className="mt-16 max-w-650 flex flex-col gap-8 items-start justify-start relative">
       <h1 className="mb-4 text-gray-600 text-sm uppercase font-bold">
         All assets ({totalClips})
       </h1>
-      <div className="w-full">
+      <div className="w-full relative">
         {clips.length === 0 ? (
           <div className="w-full flex justify-center bg-slate-50 rounded-xl p-4">
             Loading...
           </div>
         ) : (
-          <DndProvider backend={HTML5Backend}>
-            <Masonry
-              // Infinite loader
-              onRender={infiniteLoad}
-              // Provides the data for our grid items
-              items={clips}
-              // Adds 8px of space between the grid cells
-              columnGutter={8}
-              // Sets the minimum column width to 172px
-              columnWidth={220}
-              // Pre-renders 5 windows worth of content
-              overscanBy={2}
-              // This is the grid item component
-              render={ClipCard}
-            />
-          </DndProvider>
+          <Masonry
+            // Infinite loader
+            onRender={infiniteLoad}
+            // Provides the data for our grid items
+            items={clips}
+            // Adds 8px of space between the grid cells
+            columnGutter={8}
+            // Sets the minimum column width to 172px
+            columnWidth={220}
+            // Pre-renders 5 windows worth of content
+            overscanBy={2}
+            // This is the grid item component
+            render={ClipCard}
+          />
         )}
       </div>
     </div>

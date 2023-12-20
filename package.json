@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@air/react-drag-to-select": "^5.0.8",
     "axios": "^1.6.2",
     "lucide-react": "^0.295.0",
     "masonic": "^3.7.0",

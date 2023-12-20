@@ -11,7 +11,7 @@ export function BoardItemCard({ subBoard }: BoardItemCardProps) {
   const [isImageLoaded, setImageLoaded] = useState(false)
 
   return (
-    <li className="lg:max-w-xl w-full md:w-60 h-60 rounded overflow-hidden shadow-lg relative">
+    <li className="lg:max-w-xl w-full sm:w-[calc(50%-0.5rem)] md:w-60 h-60 rounded overflow-hidden shadow-lg relative">
       <div className="h-full">
         {subBoard.thumbnails && (
           <>
