@@ -104,10 +104,10 @@ export default function ClipsList({ boardId }: { boardId: string }) {
             items={clips}
             // Adds 8px of space between the grid cells
             columnGutter={8}
-            // Sets the minimum column width to 172px
+            // Sets the minimum column width to 220px
             columnWidth={220}
-            // Pre-renders 5 windows worth of content
-            overscanBy={2}
+            // Pre-renders 3 windows worth of content
+            overscanBy={3}
             // This is the grid item component
             render={ClipCard}
           />
