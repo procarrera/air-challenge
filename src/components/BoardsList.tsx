@@ -82,6 +82,7 @@ export function SubBoardsList({ parentBoardId }: { parentBoardId: string }) {
 
   async function loadData() {
     const res = await fectMoreData()
+    if (!res) return
     setSubBoards((current) => [
       ...current,
       ...res.data.filter(
@@ -97,12 +98,16 @@ export function SubBoardsList({ parentBoardId }: { parentBoardId: string }) {
     loadData()
   }, [])
 
-  async function fectMoreData(): Promise<BoardsAPIResponseInterface> {
-    const res = await airAPI.post(`/boards/${parentBoardId}`, {
-      cursor: nextCursor,
-    })
-    const data = res.data
-    return data
+  async function fectMoreData(): Promise<BoardsAPIResponseInterface | undefined> {
+    try {
+      const res = await airAPI.post(`/boards/${parentBoardId}`, {
+        cursor: nextCursor,
+      })
+      const data = res.data
+      return data
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   if (subBoards.length === 0) {

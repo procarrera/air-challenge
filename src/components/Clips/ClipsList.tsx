@@ -12,6 +12,17 @@ import { airAPI } from '@/services/api'
 import { ClipInterface } from '@/types/ClipItem'
 import ClipCard from './ClipCard'
 
+interface BoardsAPIResponseInterface {
+  data: {
+    clips: ClipInterface[]
+    total: number
+  }
+  pagination: {
+    hasMore: boolean
+    cursor: null | string
+  }
+}
+
 export default function ClipsList({ boardId }: { boardId: string }) {
   const [clips, setClips] = useState<ClipInterface[]>([])
   const [hasMore, setHasMore] = useState<boolean>(true)
@@ -21,6 +32,7 @@ export default function ClipsList({ boardId }: { boardId: string }) {
   async function loadData() {
     if (!hasMore) return
     const data = await fetchMoreData()
+    if (!data) return
     const nextItems = data.data.clips
     const pagination = data.pagination
     setClips((current) => [
@@ -46,7 +58,7 @@ export default function ClipsList({ boardId }: { boardId: string }) {
     totalItems: totalClips,
   })
 
-  const fetchMoreData = async () => {
+  async function fetchMoreData(): Promise<BoardsAPIResponseInterface | undefined> {
     try {
       const res = await airAPI.post(`/clips/search`, {
         limit: 20,
